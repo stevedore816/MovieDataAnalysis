@@ -21,7 +21,7 @@ class ElasticDBInterface():
 
 		self.client = Elasticsearch(['https://localhost:9200'],
 					basic_auth = ('elastic','changeme'), #need to put this in seperate file before doing anything special
-					ca_certs = '/home/steven-arroyo/Desktop/personalGit/weatherProject/http_ca.crt')
+					ca_certs = '/home/steven-arroyo/Desktop/personalGit/weatherProject/ElasticDockerInstance/http_ca.crt')
 					
 		#If Client Does not have a weatherIndex, we will create one. 	
 		#self.client.indices.delete(index = 'weatherData')

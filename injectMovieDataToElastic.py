@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
 		data = pd.read_csv(f'movieData/{name}.csv', engine='pyarrow')
 		
-		dictionaries = data.to_dict(orient='records')
+		dictionaries = data.to_dict(orient='records')[:1000]
 
 		elasticDB.insertDataFrame(dictionaries,name)
 		
