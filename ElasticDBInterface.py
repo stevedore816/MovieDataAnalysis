@@ -8,7 +8,7 @@ from datetime import datetime
 
 class ElasticDBInterface():
 	"""
-	This class handles communicating with Elastic to insert and pull data for weather app
+	This class handles communicating with Elastic to insert and pull data for Movie Data
 	Attributes:
 	client: Elasticsearch Client that talks to Container Instance
 	"""
@@ -21,7 +21,7 @@ class ElasticDBInterface():
 
 		self.client = Elasticsearch(['https://localhost:9200'],
 					basic_auth = ('elastic','changeme'), #need to put this in seperate file before doing anything special
-					ca_certs = '/home/steven-arroyo/Desktop/personalGit/weatherProject/ElasticDockerInstance/http_ca.crt')
+					ca_certs = '/home/steven-arroyo/Desktop/personalGit/MovieDataAnalysis/ElasticDockerInstance/http_ca.crt')
 					
 		#If Client Does not have a weatherIndex, we will create one. 	
 		#self.client.indices.delete(index = 'weatherData')
@@ -43,7 +43,8 @@ class ElasticDBInterface():
 			if indexName not in self.listIndexes():
 				print(f'creating {indexName} index...')
 				#Bare minimum settings to create the elastic index. 
-				settings = {
+					
+				parent_settings = {
 					    "settings": {
 						"number_of_shards": 1,
 						"number_of_replicas": 0
@@ -53,7 +54,9 @@ class ElasticDBInterface():
 						
 					    }
 					}
-				self.client.indices.create(index = indexName,body = settings)
+					
+				self.client.indices.create(index = indexName,body = parent_settings)
+
 		except Exception as e:
 			print(f"An error occurred: {e}") 
 	
@@ -109,11 +112,11 @@ class ElasticDBInterface():
 		    
 		self.client.indices.refresh(index=indexName)
 		
-	def getIndexData(self,indexName:str, query: dict = {}) -> DataFrame:
+	def getIndexData(self,indexName:str, query: dict = {},maxInstances:int = 1000) -> DataFrame:
 
 		try:
 			if query == {}:
-				response = self.client.search(index=indexName)
+				response = self.client.search(index=indexName,body = {"size":maxInstances})
 			else:
 				print("specialized query detected!")
 				response = self.client.search(index = indexName, body = query) 
@@ -126,11 +129,13 @@ class ElasticDBInterface():
 	def getActorByName(self, actorName : str):
 		query = {
 			"query": {
-				"match" : {"name": actorName}
+				"match" : {"name": actorName},
 				 }
+				 
+
 		  
 			}
-		return self.getIndexData("actors", query = query)
+		return self.getIndexData("actors,movies", query = query)
 
 
 		

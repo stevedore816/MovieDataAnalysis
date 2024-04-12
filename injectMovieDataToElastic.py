@@ -3,12 +3,12 @@ from ElasticDBInterface import ElasticDBInterface
 
 if __name__ == "__main__":
 	elasticDB = ElasticDBInterface()
-	names = ["actors",
+	names = ["movies",
+		"actors",
 		"countries",
 		"crew",
 		"genres",
 		"languages",
-		"movies",
 		"releases",
 		"studios",
 		"themes"]
@@ -18,9 +18,10 @@ if __name__ == "__main__":
 		
 		elasticDB.createIndex(name)
 
-		data = pd.read_csv(f'movieData/{name}.csv', engine='pyarrow')
+		data = pd.read_csv(f'movieData/{name}.csv', engine='pyarrow')[0:1000]
+		print(data)
 		
-		dictionaries = data.to_dict(orient='records')[:1000]
+		dictionaries = data.to_dict(orient='records')
 
 		elasticDB.insertDataFrame(dictionaries,name)
 		

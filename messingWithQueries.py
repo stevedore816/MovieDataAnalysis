@@ -11,4 +11,6 @@ names = ["actors",
 	"releases",
 	"studios",
 	"themes"]
-print(elasticDB.getActorByName("Margot Robbie"))
+print(elasticDB.getActorByName("Kofi Siriboe"))
+
+print(elasticDB.getIndexData("actors"))
