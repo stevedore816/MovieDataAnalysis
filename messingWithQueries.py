@@ -11,6 +11,13 @@ names = ["actors",
 	"releases",
 	"studios",
 	"themes"]
-print(elasticDB.getActorByName("Kofi Siriboe"))
+#print(elasticDB.getActorByName("Kofi Siriboe"))
 
-print(elasticDB.getIndexData("actors"))
+
+print(elasticDB.getMovieDataByID(1000013,"actors")["name"])
+
+
+
+print(elasticDB.getIndexData("movies")["id"].min(),elasticDB.getIndexData("movies")["id"].max())
+
+print(elasticDB.getMovieByName("Barb"))

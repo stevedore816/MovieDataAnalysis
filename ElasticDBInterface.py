@@ -136,6 +136,25 @@ class ElasticDBInterface():
 		  
 			}
 		return self.getIndexData("actors,movies", query = query)
+		
+	def getMovieDataByID(self, movieId : int, indexName:str):
+		query = {
+			"query": {
+				"match" : {"id": movieId},
+				 }
+				 
+
+		  
+			}
+		return self.getIndexData(indexName, query = query)
+		
+	def getMovieByName(self, movieName : str):
+		query = {
+		    "query": {
+		    	"query_string":{"fields":["name"], "query": f'*{movieName}*' }
+		    }
+		}
+		return self.getIndexData("movies", query = query)
 
 
 		
