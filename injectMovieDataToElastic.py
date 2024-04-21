@@ -17,8 +17,13 @@ if __name__ == "__main__":
 		elasticDB.deleteIndex(name)
 		
 		elasticDB.createIndex(name)
+		
+		
+		if name == 'crew':
+			data = pd.read_csv(f'movieData/{name}.csv', engine='pyarrow')[0:20000]
+		else:
+			data = pd.read_csv(f'movieData/{name}.csv', engine='pyarrow')[0:1000]
 
-		data = pd.read_csv(f'movieData/{name}.csv', engine='pyarrow')[0:1000]
 		print(data)
 		
 		dictionaries = data.to_dict(orient='records')

@@ -118,11 +118,14 @@ class ElasticDBInterface():
 			if query == {}:
 				response = self.client.search(index=indexName,body = {"size":maxInstances})
 			else:
-				print("specialized query detected!")
+				#print("specialized query detected!")
+				query["size"] = maxInstances
 				response = self.client.search(index = indexName, body = query) 
 			if len(response['hits']['hits']) > 0: 
 				dataframes = [pd.json_normalize(json_string['_source'])for json_string in response['hits']['hits']]
 				return pd.concat(dataframes,ignore_index=True)
+			else:
+				return []
 		except Exception as e:
 			print(f"An error occurred: {e}")
 			
@@ -151,10 +154,14 @@ class ElasticDBInterface():
 	def getMovieByName(self, movieName : str):
 		query = {
 		    "query": {
-		    	"query_string":{"fields":["name"], "query": f'*{movieName}*' }
+		    	"query_string":{"fields":["name"], "query": f'*{movieName}*' } #uses wild cards so it can be approximations
 		    }
 		}
 		return self.getIndexData("movies", query = query)
+	def getIndexFromMovieName(self,movieName:str,indexName:str):
+		ids = self.getMovieByName(movieName)["id"][0]
+		return self.getMovieDataByID(ids, indexName)
+		
 
 
 		
