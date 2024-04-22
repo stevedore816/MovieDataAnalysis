@@ -78,7 +78,7 @@ class ElasticDBInterface():
 			print(f"An error occurred: {e}") 
 	
 
-	def listIndexes(self):
+	def listIndexes(self)->list:
 		"""    
 	       	Lists all of the Indexes that exist in our Elastic instance
 
@@ -112,7 +112,18 @@ class ElasticDBInterface():
 		    
 		self.client.indices.refresh(index=indexName)
 		
-	def getIndexData(self,indexName:str, query: dict = {},maxInstances:int = 1000) -> DataFrame:
+	def getIndexData(self,indexName:str, query: dict = {},maxInstances:int = 3000) -> DataFrame:
+		"""    
+	       	Gets data from a designated index.
+
+		Args:
+		    indexName: index we want to pull from
+		    query: optional specialized query if we want to pull based on particular laws
+		    maxInstances: the maximum size we want to pull from our query
+		    
+		Returns:
+		    Dataframe of the query result from elastic
+		"""
 
 		try:
 			if query == {}:
@@ -129,7 +140,16 @@ class ElasticDBInterface():
 		except Exception as e:
 			print(f"An error occurred: {e}")
 			
-	def getActorByName(self, actorName : str):
+	def getActorByName(self, actorName : str)->DataFrame:
+		"""    
+	       	Gets an actor based on particular name
+
+		Args:
+		    actorName: actor we want to query for
+		    
+		Returns:
+		    Dataframe from actors index in elastic
+		"""
 		query = {
 			"query": {
 				"match" : {"name": actorName},
@@ -138,9 +158,19 @@ class ElasticDBInterface():
 
 		  
 			}
-		return self.getIndexData("actors,movies", query = query)
+		return self.getIndexData("actors", query = query)
 		
-	def getMovieDataByID(self, movieId : int, indexName:str):
+	def getMovieDataByID(self, movieId : int, indexName:str)->DataFrame:
+		"""    
+	       	Gets movies based on a movieID
+
+		Args:
+		    indexName: index we want to pull from
+		    movieID: id of the movie we want to pull the data out of. 
+		    
+		Returns:
+		    Dataframe of the index that associates with the movie
+		"""
 		query = {
 			"query": {
 				"match" : {"id": movieId},
@@ -151,7 +181,16 @@ class ElasticDBInterface():
 			}
 		return self.getIndexData(indexName, query = query)
 		
-	def getMovieByName(self, movieName : str):
+	def getMovieByName(self, movieName : str)->DataFrame:
+		"""    
+	       	Gets movies based on a name
+
+		Args:
+		    movieName: name of the movie we want to pull the data out of. 
+		    
+		Returns:
+		    Dataframe of the index that associates with the movie
+		"""
 		query = {
 		    "query": {
 		    	"query_string":{"fields":["name"], "query": f'*{movieName}*' } #uses wild cards so it can be approximations
@@ -159,6 +198,16 @@ class ElasticDBInterface():
 		}
 		return self.getIndexData("movies", query = query)
 	def getIndexFromMovieName(self,movieName:str,indexName:str):
+		"""    
+	       	Gets index data from a particular movie name
+
+		Args:
+		    movieName: name of the movie we want to pull the data out of. 
+		    indexName: name of the index we want to observe.
+		    
+		Returns:
+		    Dataframe of the index that associates with the movie name
+		"""
 		ids = self.getMovieByName(movieName)["id"][0]
 		return self.getMovieDataByID(ids, indexName)
 		
