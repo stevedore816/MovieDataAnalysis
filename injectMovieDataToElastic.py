@@ -29,7 +29,6 @@ class InjectMovieData():
 			"releases",
 			"studios",
 			"themes"]
-		names = ["movies"]
 			
 		for name in names:
 			self.elasticDB .deleteIndex(name)
@@ -61,5 +60,5 @@ class InjectMovieData():
 
 if __name__ == "__main__":
 	injectMovieData = InjectMovieData()
-	injectMovieData.injectData(.25)
+	injectMovieData.injectData(.5)
 
