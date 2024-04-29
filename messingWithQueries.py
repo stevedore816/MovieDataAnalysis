@@ -48,13 +48,13 @@ class QueryCreator:
 		Returns:
 		    List of all the Genre and their respective avg rating. 
 		"""
-		data = {"Genere":[],
+		data = {"Genre":[],
 			"Average-Rating": []
 		}
 		genreData = self.elasticDB.getIndexData("genres")
 		
 		for genreUnderObservation in genreData["genre"].unique():
-			data["Genere"].append(genreUnderObservation)
+			data["Genre"].append(genreUnderObservation)
 			data["Average-Rating"].append(self.getAverageHelper(genreUnderObservation,genreData))
 
 		return pd.DataFrame(data)

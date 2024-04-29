@@ -29,11 +29,12 @@ class InjectMovieData():
 			"releases",
 			"studios",
 			"themes"]
+		names = ["movies"]
 			
 		for name in names:
-			elasticDB.deleteIndex(name)
+			self.elasticDB .deleteIndex(name)
 			
-			elasticDB.createIndex(name)
+			self.elasticDB .createIndex(name)
 			
 
 			data = pd.read_csv(f'movieData/{name}.csv', engine='pyarrow')
@@ -45,7 +46,7 @@ class InjectMovieData():
 			from elasticsearch.helpers import BulkIndexError
 			
 			try:
-				elasticDB.insertDataFrame(dictionaries,name)
+				self.elasticDB .insertDataFrame(dictionaries,name)
 			except BulkIndexError as e:
 			    # Handle bulk indexing errors
 				print(f"{len(e.errors)} document(s) failed to index.")
@@ -54,7 +55,7 @@ class InjectMovieData():
 					print(f"Error: {error['index']['_id']}, Reason: {error['index']['error']['reason']}")
 
 			
-			data = elasticDB.getIndexData(name) #This just tests that the data received is correct.
+			data = self.elasticDB .getIndexData(name) #This just tests that the data received is correct.
 
 			print("Index: ",name, "\ncolumns: ", data.keys(), "\nnumber of instances: ", len(data))
 
