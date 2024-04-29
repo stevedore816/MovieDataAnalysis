@@ -1,1 +1,4 @@
-pandas, elasticsearch
+pandas
+elasticsearch
+matplotlib
+PyQt5==5.15.10
